@@ -363,8 +363,8 @@ static void yynoreturn yy_fatal_error (yyconst char* msg  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 18
-#define YY_END_OF_BUFFER 19
+#define YY_NUM_RULES 17
+#define YY_END_OF_BUFFER 18
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -374,7 +374,7 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[54] =
     {   0,
-        0,    0,   19,   16,    1,   17,   16,   15,   12,   11,
+        0,    0,   18,   16,    1,   17,   16,   15,   12,   11,
        13,   13,   13,   13,   13,   13,   13,   13,    5,    1,
         0,   14,    0,   12,   13,   13,   13,   13,   13,   13,
        13,   13,    7,    5,    8,   13,   13,    4,   13,   13,
@@ -785,91 +785,85 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 8 "lexical_scanner.l"
-{ printf("%s: BEGINING\n");}
+{ printf("%s:","BEGINING");}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 9 "lexical_scanner.l"
-{ printf("%s: BODY\n"); }
+{ printf("%s:"," BODY"); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 10 "lexical_scanner.l"
-{ printf("%s: END\n"); }
+{ printf("%s:"," END"); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 11 "lexical_scanner.l"
-{ printf("%s: NumSize\n");}
+{ printf("%s:"," NumSize");}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 12 "lexical_scanner.l"
-{ printf("%s: MOVE\n");}
+{ printf("%s:"," MOVE");}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 13 "lexical_scanner.l"
-{ printf("%s: TO\n"); }
+{ printf("%s:"," TO"); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 14 "lexical_scanner.l"
-{ printf("%s: ADD\n"); }
+{ printf("%s:"," ADD"); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 15 "lexical_scanner.l"
-{ printf("%s: INPUT\n");}
+{ printf("%s:"," INPUT");}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 16 "lexical_scanner.l"
-{ printf("%s: PRINT\n"); }
+{ printf("%s:"," PRINT"); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 17 "lexical_scanner.l"
-{ printf("%s: SEMICOLON\n"); }
+{ printf("%s:"," SEMICOLON"); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 18 "lexical_scanner.l"
-{ printf("%s: NUMBER\n"); }
+{ printf("%s:"," NUMBER"); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 19 "lexical_scanner.l"
-{ printf("%s: STRING\n"); }
+{ printf("%s:"," STRING");}
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
 #line 20 "lexical_scanner.l"
-{ printf("%s: Non alpha numerics\n"); }
+{ printf("%s:"," Non alpha numerics"); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 21 "lexical_scanner.l"
-{ printf("%s: Terminate\n");}
+{ printf("%s:"," Terminate");}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 22 "lexical_scanner.l"
-{ printf("%s: 0\n"); }
+{ printf("%s:"," 0"); }
 	YY_BREAK
 case 17:
-/* rule 17 can match eol */
 YY_RULE_SETUP
-#line 24 "lexical_scanner.l"
-{ ECHO; /*default value */ }
-	YY_BREAK
-case 18:
-YY_RULE_SETUP
-#line 25 "lexical_scanner.l"
+#line 23 "lexical_scanner.l"
 ECHO;
 	YY_BREAK
-#line 873 "lex.yy.c"
+#line 867 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1870,7 +1864,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 25 "lexical_scanner.l"
+#line 23 "lexical_scanner.l"
 
 
 
