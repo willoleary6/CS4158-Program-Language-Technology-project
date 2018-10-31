@@ -3,23 +3,22 @@
 %}
 %option noyywrap
 %%
-[\t]+ /*Ignore white space */;
-
-(?i:BEGINING)               { printf("%s:","BEGINING");}
-(?i:BODY)                   { printf("%s:"," BODY"); }
-(?i:END)                    { printf("%s:"," END"); }
-[Xx]+                       { printf("%s:"," NumSize");}
-(?i:MOVE)                   { printf("%s:"," MOVE");}
-(?i:TO)                     { printf("%s:"," TO"); }
-(?i:ADD)                    { printf("%s:"," ADD"); }
-(?i:INPUT)                  { printf("%s:"," INPUT");}
-(?i:PRINT)                  { printf("%s:"," PRINT"); }
-;                           { printf("%s:"," SEMICOLON"); }
-[0-9]+                      { printf("%s:"," NUMBER"); }
-[A-Za-z][A-Za-z0-9\-]*      { printf("%s:"," STRING");}
-\"(\\.|[^"\\])*\"           { printf("%s:"," Non alpha numerics"); }
-\.                          { printf("%s:"," Terminate");}
-.                           { printf("%s:"," 0"); }
+[\t\n]+ /*Ignore white space */;
+^(?i:BEGINING)* |              
+^(?i:BODY)*  |                
+^(?i:END)*                         { printf("KEYWORD\n");}
+[Xx]+                       { printf("Size of num\n");}
+(?i:MOVE)                   { printf("MOVE\n");}
+(?i:TO)                     { printf("TO\n");}
+(?i:ADD)                    { printf("ADD\n");}
+(?i:INPUT)                  { printf("INPUT\n");}
+(?i:PRINT)                  { printf("PRINT\n");}
+;                           { printf("terminator\n");}
+[0-9]+                      { printf("Integer\n");}
+^[A-Za-z][A-Za-z0-9\-]*     { printf("STRING\n");}
+\"(\\.|[^"\\])*\"           { printf("Text of string\n");}
+\.                          { printf("Terminate\n");}
+.                          
 %%
 
 #define yywrap() (/*CONSTCOND*/1)
