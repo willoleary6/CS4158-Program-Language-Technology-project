@@ -1,24 +1,38 @@
 %{
 
+#include "y.tab.h"
 %}
+
+
 %option noyywrap
+
+
 %%
-[\t\n]+ /*Ignore white space */;
-^(?i:BEGINING)* |              
-^(?i:BODY)*  |                
-^(?i:END)*                         { printf("KEYWORD\n");}
-[Xx]+                       { printf("Size of num\n");}
-(?i:MOVE)                   { printf("MOVE\n");}
-(?i:TO)                     { printf("TO\n");}
-(?i:ADD)                    { printf("ADD\n");}
-(?i:INPUT)                  { printf("INPUT\n");}
-(?i:PRINT)                  { printf("PRINT\n");}
-;                           { printf("terminator\n");}
-[0-9]+                      { printf("Integer\n");}
-^[A-Za-z][A-Za-z0-9\-]*     { printf("STRING\n");}
-\"(\\.|[^"\\])*\"           { printf("Text of string\n");}
-\.                          { printf("Terminate\n");}
-.                          
+[\t\n]+                     /*Ignore white space */;
+(?i:BEGINING)               {   return BEGINING;    }
+(?i:BODY)                   {   return BODY;    }
+(?i:END)                    {   return END; }
+[Xx]+                       { 
+                                yylval.size = strlen(yytext); 
+                                return NUMSIZE; 
+                            }
+(?i:MOVE)                   {   return MOVE;    }
+(?i:TO)                     {   return TO;  }
+(?i:ADD)                    {   return ADD; }
+(?i:INPUT)                  {   return INPUT;   }
+(?i:PRINT)                  {   return PRINT;   }
+;                           {   return SEMICOLON;   }
+[0-9]+                      { 
+                                yylval.size = atoi(yytext); 
+                                return INTEGER; 
+                            }
+[A-Za-z][A-Za-z0-9\-]*      {  
+                                yylval.id = yytext; 
+                                return IDENTIFIER;
+                            }
+\"(\\.|[^"\\])*\"           {   return TEXT;    }
+\.                          {   return TERMINATOR;  }
+.                           {   return 0;   }
 %%
 
 #define yywrap() (/*CONSTCOND*/1)
