@@ -162,8 +162,27 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
 
-    #define YY_LESS_LINENO(n)
-    #define YY_LINENO_REWIND_TO(ptr)
+    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
+     *       access to the local variable yy_act. Since yyless() is a macro, it would break
+     *       existing scanners that call yyless() from OUTSIDE yylex. 
+     *       One obvious solution it to make yy_act a global. I tried that, and saw
+     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
+     *       normally declared as a register variable-- so it is not worth it.
+     */
+    #define  YY_LESS_LINENO(n) \
+            do { \
+                yy_size_t yyl;\
+                for ( yyl = n; yyl < yyleng; ++yyl )\
+                    if ( yytext[yyl] == '\n' )\
+                        --yylineno;\
+            }while(0)
+    #define YY_LINENO_REWIND_TO(dst) \
+            do {\
+                const char *p;\
+                for ( p = yy_cp-1; p >= (dst); --p)\
+                    if ( *p == '\n' )\
+                        --yylineno;\
+            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -329,9 +348,6 @@ void yyfree (void *  );
 
 /* Begin user sect3 */
 
-#define yywrap() (/*CONSTCOND*/1)
-#define YY_SKIP_YYWRAP
-
 typedef unsigned char YY_CHAR;
 
 FILE *yyin = NULL, *yyout = NULL;
@@ -387,7 +403,7 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    4,    1,    1,    1,    1,    1,    1,
+        1,    2,    1,    4,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    5,    6,    1,    7,    7,    7,
         7,    7,    7,    7,    7,    7,    7,    1,    8,    1,
         1,    1,    1,    1,    9,   10,   11,   12,   13,   11,
@@ -485,6 +501,11 @@ static yyconst flex_int16_t yy_chk[155] =
        53,   53,   53,   53
     } ;
 
+/* Table of booleans, true if rule could match eol. */
+static yyconst flex_int32_t yy_rule_can_match_eol[18] =
+    {   0,
+1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,     };
+
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
 
@@ -503,7 +524,7 @@ char *yytext;
 #line 2 "lexical_scanner.l"
 
 #include "y.tab.h"
-#line 507 "lex.yy.c"
+#line 528 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -723,7 +744,7 @@ YY_DECL
 	{
 #line 10 "lexical_scanner.l"
 
-#line 727 "lex.yy.c"
+#line 748 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -769,6 +790,16 @@ yy_find_action:
 
 		YY_DO_BEFORE_ACTION;
 
+		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
+			{
+			yy_size_t yyl;
+			for ( yyl = 0; yyl < yyleng; ++yyl )
+				if ( yytext[yyl] == '\n' )
+					   
+    yylineno++;
+;
+			}
+
 do_action:	/* This label is used only to access EOF actions. */
 
 		switch ( yy_act )
@@ -784,22 +815,22 @@ case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
 #line 11 "lexical_scanner.l"
-/*Ignore white space */;
+/* Ignore whitespace */ ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 12 "lexical_scanner.l"
-{   return BEGINING;    }
+{ return BEGINING; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 13 "lexical_scanner.l"
-{   return BODY;    }
+{ return BODY; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 14 "lexical_scanner.l"
-{   return END; }
+{ return END; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
@@ -812,32 +843,32 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 19 "lexical_scanner.l"
-{   return MOVE;    }
+{ return MOVE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 20 "lexical_scanner.l"
-{   return TO;  }
+{ return TO; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 21 "lexical_scanner.l"
-{   return ADD; }
+{ return ADD; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 22 "lexical_scanner.l"
-{   return INPUT;   }
+{ return INPUT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 23 "lexical_scanner.l"
-{   return PRINT;   }
+{ return PRINT; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 24 "lexical_scanner.l"
-{   return SEMICOLON;   }
+{ return SEMICOLON; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
@@ -850,33 +881,33 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 29 "lexical_scanner.l"
-{  
+{ 
                                 yylval.id = yytext; 
-                                return IDENTIFIER;
+                                return VARIABLE; 
                             }
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
 #line 33 "lexical_scanner.l"
-{   return TEXT;    }
+{ return TEXT; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 34 "lexical_scanner.l"
-{   return TERMINATOR;  }
+{ return TERMINATOR; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 35 "lexical_scanner.l"
-{   return 0;   }
+{ return 0; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 36 "lexical_scanner.l"
 ECHO;
 	YY_BREAK
-#line 880 "lex.yy.c"
+#line 911 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1240,6 +1271,10 @@ static int yy_get_next_buffer (void)
 
 	*--yy_cp = (char) c;
 
+    if ( c == '\n' ){
+        --yylineno;
+    }
+
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
@@ -1316,6 +1351,11 @@ static int yy_get_next_buffer (void)
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
+
+	if ( c == '\n' )
+		   
+    yylineno++;
+;
 
 	return c;
 }
@@ -1783,6 +1823,9 @@ static int yy_init_globals (void)
      * This function is called from yylex_destroy(), so don't allocate here.
      */
 
+    /* We do not touch yylineno unless the option is enabled. */
+    yylineno =  1;
+    
     (yy_buffer_stack) = NULL;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
@@ -1881,5 +1924,7 @@ void yyfree (void * ptr )
 
 
 
-#define yywrap() (/*CONSTCOND*/1)
+int yywrap(void) {
+    return 1;
+}
 

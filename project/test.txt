@@ -1,14 +1,12 @@
 BEGINING.
-XXX var1.
-XXXX var2.
-XXXX var3.
+XXX XY-1.
+XXXX Y.
+XXXX Z.
 
 BODY.
-PRINT "Please intialise all variables?".
-INPUT var1;var2;var3.
+PRINT "Please enter a number?".
+INPUT Y.
 
-MOVE 15 TO var3.
-ADD var1 TO var3.
-PRINT var1;"xxx";var2;"=";var1.
-
-END.
+MOVE 15 TO Z.
+ADD Y TO Z.
+PRINT XY;" + ";Y;"=";Z.

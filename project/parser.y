@@ -15,18 +15,17 @@ extern int yylineno;
 void yyerror(const char *s);
 void addVariable(int size, char *name);
 void insertNullIntoEndOfString(char *variable);
-int isIdentifier(char *variable);
+int isVariableAlreadyDeclared(char *variable);
 void formatVariable(char *variable);
-void checkIfVariableIsIdentifier(char *var);
+void checkIfVariableisInitialised(char *var);
 void moveIntegerToVariable(int num, char *var);
-int getIdentifierSize(char *var);
-void moveIdentifierToVariable(char *firstVariable, char *secondVariable);
+int getVariableSize(char *var);
+void assignVariableToAnother(char *firstVariable, char *secondVariable);
 
 
-char identifiers[NUM_VARIABLES][32];
+char variables[NUM_VARIABLES][32];
 int variableCounter = 0;
 int sizes[NUM_VARIABLES];
-int varCounter = 0;
 
 %}
 
@@ -35,10 +34,8 @@ int varCounter = 0;
         int size;
     }
 %start start
-%token <size> INTEGER
-%token <size> NUMSIZE
-%token <id> IDENTIFIER
-
+%token <id> VARIABLE
+%token <size> INTEGER NUMSIZE
 %token BEGINING BODY END MOVE TO ADD INPUT PRINT TEXT SEMICOLON TERMINATOR INVALID
 
 %%
@@ -46,104 +43,102 @@ int varCounter = 0;
 start:          BEGINING TERMINATOR declarations 
                 {   }
 
-declarations:   declaration declarations 
-                {   }   
-                | body 
-                {   }
+declarations:   statement declarations 
+                    {   }   
+                        | body 
+                            {   }
 
-declaration:    NUMSIZE IDENTIFIER TERMINATOR 
+statement:    NUMSIZE VARIABLE TERMINATOR 
                 { 
                     addVariable($1, $2); 
                 }
 
 body:           BODY TERMINATOR code 
-                {   }
+                    {   }
 
-code:           line code 
-                {   }   
-                | end 
-                {   }
+code:           lineOfCode code 
+                    {   }   
+                        | end 
+                            {   }
 
-line:           print | input | move | add 
-                {   }
-
-print:          PRINT printStatement 
-                {   }
-
-printStatement: TEXT SEMICOLON printStatement 
-                {   }   
-                | IDENTIFIER SEMICOLON printStatement 
-                { 
-                    checkIfVariableIsIdentifier($1); 
-                }
-                | TEXT TERMINATOR 
-                {   }   
-                | IDENTIFIER TERMINATOR 
-                { 
-                    checkIfVariableIsIdentifier($1); 
-                }
+lineOfCode:     input | print | move | add 
+                    {   }
 
 input:          INPUT inputStatement 
-                {   }
+                    {   }
 
-inputStatement: IDENTIFIER TERMINATOR 
-                { 
-                    checkIfVariableIsIdentifier($1); 
-                }   
-                | IDENTIFIER SEMICOLON inputStatement 
-                { 
-                    checkIfVariableIsIdentifier($1);
-                }
+inputStatement: VARIABLE TERMINATOR 
+                    { 
+                        checkIfVariableisInitialised($1); 
+                    }   
+                        | VARIABLE SEMICOLON inputStatement 
+                            { 
+                                checkIfVariableisInitialised($1);
+                            }
 
-move:           MOVE INTEGER TO IDENTIFIER TERMINATOR 
-                { 
-                    moveIntegerToVariable($2, $4); 
-                }   
-                | MOVE IDENTIFIER TO IDENTIFIER TERMINATOR 
-                { 
-                    moveIdentifierToVariable($2, $4); 
-                }
+print:          PRINT printStatement 
+                    {   }
 
-add:            ADD INTEGER TO IDENTIFIER TERMINATOR 
-                { 
-                    moveIntegerToVariable($2, $4); 
-                }   
-                | ADD IDENTIFIER TO IDENTIFIER TERMINATOR 
-                { 
-                    moveIdentifierToVariable($2, $4); 
-                }
+printStatement: TEXT SEMICOLON printStatement 
+                    {   }   
+                        | VARIABLE SEMICOLON printStatement 
+                            { 
+                                checkIfVariableisInitialised($1); 
+                            }
+                            | TEXT TERMINATOR 
+                                {   }   
+                                | VARIABLE TERMINATOR 
+                                    { 
+                                        checkIfVariableisInitialised($1); 
+                                    }
+
+move:           MOVE INTEGER TO VARIABLE TERMINATOR 
+                    { 
+                        moveIntegerToVariable($2, $4); 
+                    }   
+                        | MOVE VARIABLE TO VARIABLE TERMINATOR 
+                            { 
+                                assignVariableToAnother($2, $4); 
+                            }
+
+add:            ADD INTEGER TO VARIABLE TERMINATOR 
+                    { 
+                        moveIntegerToVariable($2, $4); 
+                    }   
+                        | ADD VARIABLE TO VARIABLE TERMINATOR 
+                            { 
+                                assignVariableToAnother($2, $4); 
+                            }
 
 end:            END TERMINATOR 
-                { 
-                    exit(EXIT_SUCCESS); 
-                }
+                    { 
+                        exit(EXIT_SUCCESS); 
+                    }
 
 %%
 
 
-int main(void)
-{
-   int ntoken, vtoken;
-   ntoken = 1;
-   while(ntoken){
-       ntoken = yylex();
-   }
-   return 0;
+int main() {
+    do {
+        yyparse();
+    } while(!feof(yyin));
 }
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error (L%d): %s\n", yylineno, s);
+    fprintf(stderr, "Error on line: (L%d): %s\n", yylineno, s);
 }
 
 void addVariable(int size, char *name) {
-    // function that adds variable to our list of identifiers
+    // function that adds variable to our list of variables
     insertNullIntoEndOfString(name);
-    if (!isIdentifier(name)) {
-        strcpy(identifiers[variableCounter], name);
+    if (!isVariableAlreadyDeclared(name)) {
+        strcpy(variables[variableCounter], name);
         sizes[variableCounter] = size;
         variableCounter++;
     } else {
-        printf("Warning (L%d): Identifier %s already created.\n", yylineno, name);
+        printf("Warning on line: (L%d): Variable %s already in use.\n"
+                , yylineno, name
+            );
     }
 }
 
@@ -154,13 +149,13 @@ void insertNullIntoEndOfString(char *variable) {
     }
 }
 
-int isIdentifier(char *variable) {
+int isVariableAlreadyDeclared(char *variable) {
     // run through list of indentifier and see if our new variable has already been added.
     if (strstr(variable, ";") != NULL) {
         formatVariable(variable);
     }
     for (int i = 0; i < variableCounter; i++) {
-        if (strcmp(variable, identifiers[i]) == 0) {
+        if (strcmp(variable, variables[i]) == 0) {
             return 1;
         }
     }
@@ -177,10 +172,10 @@ void formatVariable(char *variable) {
     }
 }
 
-void checkIfVariableIsIdentifier(char *var) {
+void checkIfVariableisInitialised(char *var) {
     insertNullIntoEndOfString(var);
-    if (!isIdentifier(var)) {
-        printf("Warning (L%d): Identifier %s not initialised.\n", 
+    if (!isVariableAlreadyDeclared(var)) {
+        printf("Warning (L%d): Variable %s not initialised.\n", 
                 yylineno, var
             );
     }
@@ -189,55 +184,56 @@ void checkIfVariableIsIdentifier(char *var) {
 
 void moveIntegerToVariable(int num, char *var) {
     insertNullIntoEndOfString(var);
-    int size = getIdentifierSize(var);
+    int size = getVariableSize(var);
     // check that there is indeed a intendifier by this name
     if (size > -1) {
         int inputDigits = floor(log10(abs(num))) + 1;
         // check integer will fit in var
         if (inputDigits > size) {
-            printf("Warning (L%d): Integer is too large. Expected %d digits or less, is %d.\n", 
+            printf("Warning (L%d): Integer is too big. Expected %d digits or less, is %d.\n", 
                     yylineno, size, inputDigits
                 );
         }
     } else {
-        printf("Warning (L%d): Integer cannot be assigned. Identifier %s not initialised.\n", 
+        printf("Warning (L%d): Integer cannot be assigned. Variable %s not initialised.\n", 
                 yylineno, var
             );
     }
 }
 
 
-void moveIdentifierToVariable(char *firstVariable, char *secondVariable) {
+void assignVariableToAnother(char *firstVariable, char *secondVariable) {
     formatVariable(firstVariable);
     insertNullIntoEndOfString(secondVariable);
-    // checking that both these variables are actually identifiers
-    if (isIdentifier(firstVariable)) {
-            if (isIdentifier(secondVariable)) {
+    // checking that both these variables are actually variables
+    if (isVariableAlreadyDeclared(firstVariable)) {
+            if (isVariableAlreadyDeclared(secondVariable)) {
                 // getting Identifier sizes now so we can compare differences
-                int firstVariableSize = getIdentifierSize(firstVariable);
-                int secondVariableSize = getIdentifierSize(secondVariable);
+                int firstVariableSize = getVariableSize(firstVariable);
+                int secondVariableSize = getVariableSize(secondVariable);
                 if (firstVariableSize > secondVariableSize) {
                     printf("Warning (L%d): Moving %s (%d digits) to %s (%d digits).\n", 
-                            yylineno, firstVariable, firstVariableSize, secondVariable, secondVariableSize
+                            yylineno, firstVariable, firstVariableSize, 
+                            secondVariable, secondVariableSize
                         );
                 }
         } else {
-            printf("Warning (L%d): Identifier %s not initialised.\n", 
+            printf("Warning (L%d): Variable %s not initialised.\n", 
                     yylineno, secondVariable
                 );
         }
     } else {
-        printf("Warning (L%d): Identifier %s not initialised.\n", 
+        printf("Warning (L%d): Variable %s not initialised.\n", 
                 yylineno, firstVariable
             );
     }
 }
 
 
-int getIdentifierSize(char *var) {
+int getVariableSize(char *var) {
     // find the size of the identifier provided
-    for (int i = 0; i < varCounter; i++) {
-        if (strcmp(var, identifiers[i]) == 0) {
+    for (int i = 0; i < variableCounter; i++) {
+        if (strcmp(var, variables[i]) == 0) {
             return sizes[i];
         }
     }

@@ -4,35 +4,37 @@
 %}
 
 
-%option noyywrap
+%option yylineno
 
 
 %%
-[\t\n]+                     /*Ignore white space */;
-(?i:BEGINING)               {   return BEGINING;    }
-(?i:BODY)                   {   return BODY;    }
-(?i:END)                    {   return END; }
+[\t\n ]+                    /* Ignore whitespace */ ;
+(?i:BEGINING)               { return BEGINING; }
+(?i:BODY)                   { return BODY; }
+(?i:END)                    { return END; }
 [Xx]+                       { 
                                 yylval.size = strlen(yytext); 
                                 return NUMSIZE; 
                             }
-(?i:MOVE)                   {   return MOVE;    }
-(?i:TO)                     {   return TO;  }
-(?i:ADD)                    {   return ADD; }
-(?i:INPUT)                  {   return INPUT;   }
-(?i:PRINT)                  {   return PRINT;   }
-;                           {   return SEMICOLON;   }
+(?i:MOVE)                   { return MOVE; }
+(?i:TO)                     { return TO; }
+(?i:ADD)                    { return ADD; }
+(?i:INPUT)                  { return INPUT; }
+(?i:PRINT)                  { return PRINT; }
+;                           { return SEMICOLON; }
 [0-9]+                      { 
                                 yylval.size = atoi(yytext); 
                                 return INTEGER; 
                             }
-[A-Za-z][A-Za-z0-9\-]*      {  
+[A-Za-z][A-Za-z0-9\-]*      { 
                                 yylval.id = yytext; 
-                                return IDENTIFIER;
+                                return VARIABLE; 
                             }
-\"(\\.|[^"\\])*\"           {   return TEXT;    }
-\.                          {   return TERMINATOR;  }
-.                           {   return 0;   }
+\"(\\.|[^"\\])*\"           { return TEXT; }
+\.                          { return TERMINATOR; }
+.                           { return 0; }
 %%
 
-#define yywrap() (/*CONSTCOND*/1)
+int yywrap(void) {
+    return 1;
+}

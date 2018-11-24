@@ -1,6 +1,6 @@
-#define INTEGER 257
-#define NUMSIZE 258
-#define IDENTIFIER 259
+#define VARIABLE 257
+#define INTEGER 258
+#define NUMSIZE 259
 #define BEGINING 260
 #define BODY 261
 #define END 262

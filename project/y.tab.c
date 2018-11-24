@@ -34,18 +34,17 @@ extern int yylineno;
 void yyerror(const char *s);
 void addVariable(int size, char *name);
 void insertNullIntoEndOfString(char *variable);
-int isIdentifier(char *variable);
+int isVariableAlreadyDeclared(char *variable);
 void formatVariable(char *variable);
-void checkIfVariableIsIdentifier(char *var);
+void checkIfVariableisInitialised(char *var);
 void moveIntegerToVariable(int num, char *var);
-int getIdentifierSize(char *var);
-void moveIdentifierToVariable(char *firstVariable, char *secondVariable);
+int getVariableSize(char *var);
+void assignVariableToAnother(char *firstVariable, char *secondVariable);
 
 
-char identifiers[NUM_VARIABLES][32];
+char variables[NUM_VARIABLES][32];
 int variableCounter = 0;
 int sizes[NUM_VARIABLES];
-int varCounter = 0;
 
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
@@ -53,13 +52,13 @@ int varCounter = 0;
 #endif
 #ifndef YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
-#line 33 "parser.y"
+#line 32 "parser.y"
 typedef union {
         char *id; 
         int size;
     } YYSTYPE;
 #endif /* !YYSTYPE_IS_DECLARED */
-#line 63 "y.tab.c"
+#line 62 "y.tab.c"
 
 /* compatibility with bison */
 #ifdef YYPARSE_PARAM
@@ -92,9 +91,9 @@ typedef union {
 
 extern int YYPARSE_DECL();
 
-#define INTEGER 257
-#define NUMSIZE 258
-#define IDENTIFIER 259
+#define VARIABLE 257
+#define INTEGER 258
+#define NUMSIZE 259
 #define BEGINING 260
 #define BODY 261
 #define END 262
@@ -111,32 +110,32 @@ extern int YYPARSE_DECL();
 typedef short YYINT;
 static const YYINT yylhs[] = {                           -1,
     0,    1,    1,    2,    3,    4,    4,    5,    5,    5,
-    5,    7,   11,   11,   11,   11,    8,   12,   12,    9,
+    5,    7,   11,   11,    8,   12,   12,   12,   12,    9,
     9,   10,   10,    6,
 };
 static const YYINT yylen[] = {                            2,
     3,    2,    1,    3,    3,    2,    1,    1,    1,    1,
-    1,    2,    3,    3,    2,    2,    2,    2,    3,    5,
+    1,    2,    2,    3,    2,    3,    3,    2,    2,    5,
     5,    5,    5,    2,
 };
 static const YYINT yydefred[] = {                         0,
     0,    0,    0,    0,    0,    1,    0,    3,    0,    0,
     2,    4,    0,    0,    0,    0,    0,    5,    0,    7,
     8,    9,   10,   11,   24,    0,    0,    0,    0,    0,
-   17,    0,    0,   12,    6,    0,    0,    0,    0,    0,
-   18,    0,   16,    0,   15,    0,    0,    0,    0,   19,
-   14,   13,   20,   21,   22,   23,
+   12,    0,    0,   15,    6,    0,    0,    0,    0,    0,
+   13,    0,   19,    0,   18,    0,    0,    0,    0,   14,
+   17,   16,   21,   20,   23,   22,
 };
 static const YYINT yydgoto[] = {                          2,
     6,    7,    8,   18,   19,   20,   21,   22,   23,   24,
-   34,   31,
+   31,   34,
 };
-static const YYINT yysindex[] = {                      -257,
- -262,    0, -251, -243, -252,    0, -251,    0, -247, -261,
-    0,    0, -242, -246, -245, -235, -259,    0, -261,    0,
-    0,    0,    0,    0,    0, -237, -234, -233, -232, -250,
-    0, -248, -244,    0,    0, -230, -226, -225, -224, -235,
-    0, -259,    0, -259,    0, -231, -229, -228, -227,    0,
+static const YYINT yysindex[] = {                      -238,
+ -267,    0, -252, -234, -246,    0, -252,    0, -244, -261,
+    0,    0, -242, -245, -243, -232, -257,    0, -261,    0,
+    0,    0,    0,    0,    0, -237, -235, -233, -231, -253,
+    0, -251, -249,    0,    0, -227, -225, -223, -222, -232,
+    0, -257,    0, -257,    0, -230, -229, -228, -226,    0,
     0,    0,    0,    0,    0,    0,
 };
 static const YYINT yyrindex[] = {                         0,
@@ -149,22 +148,22 @@ static const YYINT yyrindex[] = {                         0,
 };
 static const YYINT yygindex[] = {                         0,
    29,    0,    0,   18,    0,    0,    0,    0,    0,    0,
-  -27,   -2,
+   -2,  -34,
 };
-#define YYTABLESIZE 43
+#define YYTABLESIZE 44
 static const YYINT yytable[] = {                         32,
-   13,   14,    1,   15,   16,   17,    4,    3,   33,    5,
-   26,   28,   27,   29,   51,    9,   52,   10,   40,   41,
-   42,   43,   12,   30,   44,   45,   36,   25,   46,   37,
-   38,   39,   47,   48,   49,   11,   35,   50,   53,    0,
-   54,   55,   56,
+   13,   14,    3,   15,   16,   17,    4,   51,    5,   52,
+   33,   26,   27,   28,   29,   40,   41,   42,   43,   44,
+   45,    1,    9,   10,   30,   12,   36,   25,   37,   46,
+   38,   47,   39,   48,   49,   11,   35,   50,    0,   53,
+   54,   55,    0,   56,
 };
-static const YYINT yycheck[] = {                        259,
-  262,  263,  260,  265,  266,  267,  258,  270,  268,  261,
-  257,  257,  259,  259,   42,  259,   44,  270,  269,  270,
-  269,  270,  270,  259,  269,  270,  264,  270,  259,  264,
-  264,  264,  259,  259,  259,    7,   19,   40,  270,   -1,
-  270,  270,  270,
+static const YYINT yycheck[] = {                        257,
+  262,  263,  270,  265,  266,  267,  259,   42,  261,   44,
+  268,  257,  258,  257,  258,  269,  270,  269,  270,  269,
+  270,  260,  257,  270,  257,  270,  264,  270,  264,  257,
+  264,  257,  264,  257,  257,    7,   19,   40,   -1,  270,
+  270,  270,   -1,  270,
 };
 #define YYFINAL 2
 #ifndef YYDEBUG
@@ -182,35 +181,35 @@ static const char *const yyname[] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"INTEGER","NUMSIZE","IDENTIFIER",
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"VARIABLE","INTEGER","NUMSIZE",
 "BEGINING","BODY","END","MOVE","TO","ADD","INPUT","PRINT","TEXT","SEMICOLON",
 "TERMINATOR","INVALID",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"illegal-symbol",
 };
 static const char *const yyrule[] = {
 "$accept : start",
 "start : BEGINING TERMINATOR declarations",
-"declarations : declaration declarations",
+"declarations : statement declarations",
 "declarations : body",
-"declaration : NUMSIZE IDENTIFIER TERMINATOR",
+"statement : NUMSIZE VARIABLE TERMINATOR",
 "body : BODY TERMINATOR code",
-"code : line code",
+"code : lineOfCode code",
 "code : end",
-"line : print",
-"line : input",
-"line : move",
-"line : add",
+"lineOfCode : input",
+"lineOfCode : print",
+"lineOfCode : move",
+"lineOfCode : add",
+"input : INPUT inputStatement",
+"inputStatement : VARIABLE TERMINATOR",
+"inputStatement : VARIABLE SEMICOLON inputStatement",
 "print : PRINT printStatement",
 "printStatement : TEXT SEMICOLON printStatement",
-"printStatement : IDENTIFIER SEMICOLON printStatement",
+"printStatement : VARIABLE SEMICOLON printStatement",
 "printStatement : TEXT TERMINATOR",
-"printStatement : IDENTIFIER TERMINATOR",
-"input : INPUT inputStatement",
-"inputStatement : IDENTIFIER TERMINATOR",
-"inputStatement : IDENTIFIER SEMICOLON inputStatement",
-"move : MOVE INTEGER TO IDENTIFIER TERMINATOR",
-"move : MOVE IDENTIFIER TO IDENTIFIER TERMINATOR",
-"add : ADD INTEGER TO IDENTIFIER TERMINATOR",
-"add : ADD IDENTIFIER TO IDENTIFIER TERMINATOR",
+"printStatement : VARIABLE TERMINATOR",
+"move : MOVE INTEGER TO VARIABLE TERMINATOR",
+"move : MOVE VARIABLE TO VARIABLE TERMINATOR",
+"add : ADD INTEGER TO VARIABLE TERMINATOR",
+"add : ADD VARIABLE TO VARIABLE TERMINATOR",
 "end : END TERMINATOR",
 
 };
@@ -249,32 +248,30 @@ typedef struct {
 } YYSTACKDATA;
 /* variables for the parser stack */
 static YYSTACKDATA yystack;
-#line 122 "parser.y"
+#line 119 "parser.y"
 
 
-int main(void)
-{
-   int ntoken, vtoken;
-   ntoken = 1;
-   while(ntoken){
-       ntoken = yylex();
-   }
-   return 0;
+int main() {
+    do {
+        yyparse();
+    } while(!feof(yyin));
 }
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error (L%d): %s\n", yylineno, s);
+    fprintf(stderr, "Error on line: (L%d): %s\n", yylineno, s);
 }
 
 void addVariable(int size, char *name) {
-    // function that adds variable to our list of identifiers
+    // function that adds variable to our list of variables
     insertNullIntoEndOfString(name);
-    if (!isIdentifier(name)) {
-        strcpy(identifiers[variableCounter], name);
+    if (!isVariableAlreadyDeclared(name)) {
+        strcpy(variables[variableCounter], name);
         sizes[variableCounter] = size;
         variableCounter++;
     } else {
-        printf("Warning (L%d): Identifier %s already created.\n", yylineno, name);
+        printf("Warning on line: (L%d): Variable %s already in use.\n"
+                , yylineno, name
+            );
     }
 }
 
@@ -285,13 +282,13 @@ void insertNullIntoEndOfString(char *variable) {
     }
 }
 
-int isIdentifier(char *variable) {
+int isVariableAlreadyDeclared(char *variable) {
     // run through list of indentifier and see if our new variable has already been added.
     if (strstr(variable, ";") != NULL) {
         formatVariable(variable);
     }
     for (int i = 0; i < variableCounter; i++) {
-        if (strcmp(variable, identifiers[i]) == 0) {
+        if (strcmp(variable, variables[i]) == 0) {
             return 1;
         }
     }
@@ -308,10 +305,10 @@ void formatVariable(char *variable) {
     }
 }
 
-void checkIfVariableIsIdentifier(char *var) {
+void checkIfVariableisInitialised(char *var) {
     insertNullIntoEndOfString(var);
-    if (!isIdentifier(var)) {
-        printf("Warning (L%d): Identifier %s not initialised.\n", 
+    if (!isVariableAlreadyDeclared(var)) {
+        printf("Warning (L%d): Variable %s not initialised.\n", 
                 yylineno, var
             );
     }
@@ -320,61 +317,62 @@ void checkIfVariableIsIdentifier(char *var) {
 
 void moveIntegerToVariable(int num, char *var) {
     insertNullIntoEndOfString(var);
-    int size = getIdentifierSize(var);
+    int size = getVariableSize(var);
     // check that there is indeed a intendifier by this name
     if (size > -1) {
         int inputDigits = floor(log10(abs(num))) + 1;
         // check integer will fit in var
         if (inputDigits > size) {
-            printf("Warning (L%d): Integer is too large. Expected %d digits or less, is %d.\n", 
+            printf("Warning (L%d): Integer is too big. Expected %d digits or less, is %d.\n", 
                     yylineno, size, inputDigits
                 );
         }
     } else {
-        printf("Warning (L%d): Integer cannot be assigned. Identifier %s not initialised.\n", 
+        printf("Warning (L%d): Integer cannot be assigned. Variable %s not initialised.\n", 
                 yylineno, var
             );
     }
 }
 
 
-void moveIdentifierToVariable(char *firstVariable, char *secondVariable) {
+void assignVariableToAnother(char *firstVariable, char *secondVariable) {
     formatVariable(firstVariable);
     insertNullIntoEndOfString(secondVariable);
-    // checking that both these variables are actually identifiers
-    if (isIdentifier(firstVariable)) {
-            if (isIdentifier(secondVariable)) {
+    // checking that both these variables are actually variables
+    if (isVariableAlreadyDeclared(firstVariable)) {
+            if (isVariableAlreadyDeclared(secondVariable)) {
                 // getting Identifier sizes now so we can compare differences
-                int firstVariableSize = getIdentifierSize(firstVariable);
-                int secondVariableSize = getIdentifierSize(secondVariable);
+                int firstVariableSize = getVariableSize(firstVariable);
+                int secondVariableSize = getVariableSize(secondVariable);
                 if (firstVariableSize > secondVariableSize) {
                     printf("Warning (L%d): Moving %s (%d digits) to %s (%d digits).\n", 
-                            yylineno, firstVariable, firstVariableSize, secondVariable, secondVariableSize
+                            yylineno, firstVariable, firstVariableSize, 
+                            secondVariable, secondVariableSize
                         );
                 }
         } else {
-            printf("Warning (L%d): Identifier %s not initialised.\n", 
+            printf("Warning (L%d): Variable %s not initialised.\n", 
                     yylineno, secondVariable
                 );
         }
     } else {
-        printf("Warning (L%d): Identifier %s not initialised.\n", 
+        printf("Warning (L%d): Variable %s not initialised.\n", 
                 yylineno, firstVariable
             );
     }
 }
 
 
-int getIdentifierSize(char *var) {
+int getVariableSize(char *var) {
     // find the size of the identifier provided
-    for (int i = 0; i < varCounter; i++) {
-        if (strcmp(var, identifiers[i]) == 0) {
+    for (int i = 0; i < variableCounter; i++) {
+        if (strcmp(var, variables[i]) == 0) {
             return sizes[i];
         }
     }
     return -1;
 }
-#line 378 "y.tab.c"
+#line 376 "y.tab.c"
 
 #if YYDEBUG
 #include <stdio.h>	/* needed for printf */
@@ -574,110 +572,110 @@ yyreduce:
     switch (yyn)
     {
 case 1:
-#line 47 "parser.y"
+#line 44 "parser.y"
 	{   }
 break;
 case 2:
-#line 50 "parser.y"
+#line 47 "parser.y"
 	{   }
 break;
 case 3:
-#line 52 "parser.y"
+#line 49 "parser.y"
 	{   }
 break;
 case 4:
-#line 55 "parser.y"
+#line 52 "parser.y"
 	{ 
                     addVariable(yystack.l_mark[-2].size, yystack.l_mark[-1].id); 
                 }
 break;
 case 5:
-#line 60 "parser.y"
+#line 57 "parser.y"
 	{   }
 break;
 case 6:
-#line 63 "parser.y"
+#line 60 "parser.y"
 	{   }
 break;
 case 7:
-#line 65 "parser.y"
+#line 62 "parser.y"
 	{   }
 break;
 case 11:
-#line 68 "parser.y"
+#line 65 "parser.y"
 	{   }
 break;
 case 12:
-#line 71 "parser.y"
+#line 68 "parser.y"
 	{   }
 break;
 case 13:
-#line 74 "parser.y"
-	{   }
+#line 71 "parser.y"
+	{ 
+                        checkIfVariableisInitialised(yystack.l_mark[-1].id); 
+                    }
 break;
 case 14:
-#line 76 "parser.y"
+#line 75 "parser.y"
 	{ 
-                    checkIfVariableIsIdentifier(yystack.l_mark[-2].id); 
-                }
+                                checkIfVariableisInitialised(yystack.l_mark[-2].id);
+                            }
 break;
 case 15:
 #line 80 "parser.y"
 	{   }
 break;
 case 16:
-#line 82 "parser.y"
-	{ 
-                    checkIfVariableIsIdentifier(yystack.l_mark[-1].id); 
-                }
-break;
-case 17:
-#line 87 "parser.y"
+#line 83 "parser.y"
 	{   }
 break;
-case 18:
-#line 90 "parser.y"
+case 17:
+#line 85 "parser.y"
 	{ 
-                    checkIfVariableIsIdentifier(yystack.l_mark[-1].id); 
-                }
+                                checkIfVariableisInitialised(yystack.l_mark[-2].id); 
+                            }
+break;
+case 18:
+#line 89 "parser.y"
+	{   }
 break;
 case 19:
-#line 94 "parser.y"
+#line 91 "parser.y"
 	{ 
-                    checkIfVariableIsIdentifier(yystack.l_mark[-2].id);
-                }
+                                        checkIfVariableisInitialised(yystack.l_mark[-1].id); 
+                                    }
 break;
 case 20:
-#line 99 "parser.y"
+#line 96 "parser.y"
 	{ 
-                    moveIntegerToVariable(yystack.l_mark[-3].size, yystack.l_mark[-1].id); 
-                }
+                        moveIntegerToVariable(yystack.l_mark[-3].size, yystack.l_mark[-1].id); 
+                    }
 break;
 case 21:
-#line 103 "parser.y"
+#line 100 "parser.y"
 	{ 
-                    moveIdentifierToVariable(yystack.l_mark[-3].id, yystack.l_mark[-1].id); 
-                }
+                                assignVariableToAnother(yystack.l_mark[-3].id, yystack.l_mark[-1].id); 
+                            }
 break;
 case 22:
-#line 108 "parser.y"
+#line 105 "parser.y"
 	{ 
-                    moveIntegerToVariable(yystack.l_mark[-3].size, yystack.l_mark[-1].id); 
-                }
+                        moveIntegerToVariable(yystack.l_mark[-3].size, yystack.l_mark[-1].id); 
+                    }
 break;
 case 23:
-#line 112 "parser.y"
+#line 109 "parser.y"
 	{ 
-                    moveIdentifierToVariable(yystack.l_mark[-3].id, yystack.l_mark[-1].id); 
-                }
+                                assignVariableToAnother(yystack.l_mark[-3].id, yystack.l_mark[-1].id); 
+                            }
 break;
 case 24:
-#line 117 "parser.y"
+#line 114 "parser.y"
 	{ 
-                    exit(EXIT_SUCCESS); 
-                }
+                        exit(EXIT_SUCCESS); 
+                    }
 break;
-#line 681 "y.tab.c"
+#line 679 "y.tab.c"
     }
     yystack.s_mark -= yym;
     yystate = *yystack.s_mark;
