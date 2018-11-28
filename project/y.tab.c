@@ -41,7 +41,7 @@ void moveIntegerToVariable(int num, char *var);
 int getVariableSize(char *var);
 void assignVariableToAnother(char *firstVariable, char *secondVariable);
 
-
+int hasErrors = 0;
 char variables[NUM_VARIABLES][32];
 int variableCounter = 0;
 int sizes[NUM_VARIABLES];
@@ -92,17 +92,17 @@ typedef union {
 extern int YYPARSE_DECL();
 
 #define VARIABLE 257
-#define INTEGER 258
-#define NUMSIZE 259
-#define BEGINING 260
-#define BODY 261
-#define END 262
-#define MOVE 263
-#define TO 264
-#define ADD 265
-#define INPUT 266
-#define PRINT 267
-#define TEXT 268
+#define TEXT 258
+#define INTEGER 259
+#define NUMSIZE 260
+#define BEGINING 261
+#define BODY 262
+#define END 263
+#define MOVE 264
+#define TO 265
+#define ADD 266
+#define INPUT 267
+#define PRINT 268
 #define SEMICOLON 269
 #define TERMINATOR 270
 #define INVALID 271
@@ -115,7 +115,7 @@ static const YYINT yylhs[] = {                           -1,
 };
 static const YYINT yylen[] = {                            2,
     3,    2,    1,    3,    3,    2,    1,    1,    1,    1,
-    1,    2,    2,    3,    2,    3,    3,    2,    2,    5,
+    1,    2,    2,    3,    2,    3,    2,    2,    3,    5,
     5,    5,    5,    2,
 };
 static const YYINT yydefred[] = {                         0,
@@ -123,19 +123,19 @@ static const YYINT yydefred[] = {                         0,
     2,    4,    0,    0,    0,    0,    0,    5,    0,    7,
     8,    9,   10,   11,   24,    0,    0,    0,    0,    0,
    12,    0,    0,   15,    6,    0,    0,    0,    0,    0,
-   13,    0,   19,    0,   18,    0,    0,    0,    0,   14,
-   17,   16,   21,   20,   23,   22,
+   13,    0,   18,    0,   17,    0,    0,    0,    0,   14,
+   19,   16,   21,   20,   23,   22,
 };
 static const YYINT yydgoto[] = {                          2,
     6,    7,    8,   18,   19,   20,   21,   22,   23,   24,
    31,   34,
 };
-static const YYINT yysindex[] = {                      -238,
- -267,    0, -252, -234, -246,    0, -252,    0, -244, -261,
-    0,    0, -242, -245, -243, -232, -257,    0, -261,    0,
-    0,    0,    0,    0,    0, -237, -235, -233, -231, -253,
-    0, -251, -249,    0,    0, -227, -225, -223, -222, -232,
-    0, -257,    0, -257,    0, -230, -229, -228, -226,    0,
+static const YYINT yysindex[] = {                      -259,
+ -248,    0, -254, -234, -246,    0, -254,    0, -245, -263,
+    0,    0, -244, -250, -247, -230, -243,    0, -263,    0,
+    0,    0,    0,    0,    0, -237, -236, -235, -233, -253,
+    0, -251, -249,    0,    0, -226, -224, -223, -222, -230,
+    0, -243,    0, -243,    0, -232, -231, -229, -228,    0,
     0,    0,    0,    0,    0,    0,
 };
 static const YYINT yyrindex[] = {                         0,
@@ -148,22 +148,22 @@ static const YYINT yyrindex[] = {                         0,
 };
 static const YYINT yygindex[] = {                         0,
    29,    0,    0,   18,    0,    0,    0,    0,    0,    0,
-   -2,  -34,
+    3,  -31,
 };
-#define YYTABLESIZE 44
-static const YYINT yytable[] = {                         32,
-   13,   14,    3,   15,   16,   17,    4,   51,    5,   52,
-   33,   26,   27,   28,   29,   40,   41,   42,   43,   44,
-   45,    1,    9,   10,   30,   12,   36,   25,   37,   46,
-   38,   47,   39,   48,   49,   11,   35,   50,    0,   53,
-   54,   55,    0,   56,
+#define YYTABLESIZE 43
+static const YYINT yytable[] = {                         13,
+   14,    1,   15,   16,   17,    4,   26,    5,   27,   28,
+   51,   29,   52,   32,   33,   40,   41,   42,   43,   44,
+   45,    3,    9,   10,   12,   25,   30,   36,   37,   38,
+   46,   39,   47,   48,   49,   11,   35,   53,   54,    0,
+   55,   56,   50,
 };
-static const YYINT yycheck[] = {                        257,
-  262,  263,  270,  265,  266,  267,  259,   42,  261,   44,
-  268,  257,  258,  257,  258,  269,  270,  269,  270,  269,
-  270,  260,  257,  270,  257,  270,  264,  270,  264,  257,
-  264,  257,  264,  257,  257,    7,   19,   40,   -1,  270,
-  270,  270,   -1,  270,
+static const YYINT yycheck[] = {                        263,
+  264,  261,  266,  267,  268,  260,  257,  262,  259,  257,
+   42,  259,   44,  257,  258,  269,  270,  269,  270,  269,
+  270,  270,  257,  270,  270,  270,  257,  265,  265,  265,
+  257,  265,  257,  257,  257,    7,   19,  270,  270,   -1,
+  270,  270,   40,
 };
 #define YYFINAL 2
 #ifndef YYDEBUG
@@ -181,8 +181,8 @@ static const char *const yyname[] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"VARIABLE","INTEGER","NUMSIZE",
-"BEGINING","BODY","END","MOVE","TO","ADD","INPUT","PRINT","TEXT","SEMICOLON",
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"VARIABLE","TEXT","INTEGER",
+"NUMSIZE","BEGINING","BODY","END","MOVE","TO","ADD","INPUT","PRINT","SEMICOLON",
 "TERMINATOR","INVALID",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"illegal-symbol",
 };
 static const char *const yyrule[] = {
@@ -203,9 +203,9 @@ static const char *const yyrule[] = {
 "inputStatement : VARIABLE SEMICOLON inputStatement",
 "print : PRINT printStatement",
 "printStatement : TEXT SEMICOLON printStatement",
-"printStatement : VARIABLE SEMICOLON printStatement",
 "printStatement : TEXT TERMINATOR",
 "printStatement : VARIABLE TERMINATOR",
+"printStatement : VARIABLE SEMICOLON printStatement",
 "move : MOVE INTEGER TO VARIABLE TERMINATOR",
 "move : MOVE VARIABLE TO VARIABLE TERMINATOR",
 "add : ADD INTEGER TO VARIABLE TERMINATOR",
@@ -248,17 +248,20 @@ typedef struct {
 } YYSTACKDATA;
 /* variables for the parser stack */
 static YYSTACKDATA yystack;
-#line 119 "parser.y"
+#line 120 "parser.y"
 
 
 int main() {
-    do {
-        yyparse();
-    } while(!feof(yyin));
+    yyparse();
+    if (hasErrors == 0) {
+        printf("Program conforms perfectly.\n");
+    }
+    return hasErrors;
 }
 
-void yyerror(const char *s) {
-    fprintf(stderr, "Error on line: (L%d): %s\n", yylineno, s);
+void yyerror(const char* s) {
+    printf("%s on line %d\n", s, yylineno);
+    hasErrors = 1;
 }
 
 void addVariable(int size, char *name) {
@@ -372,7 +375,7 @@ int getVariableSize(char *var) {
     }
     return -1;
 }
-#line 376 "y.tab.c"
+#line 379 "y.tab.c"
 
 #if YYDEBUG
 #include <stdio.h>	/* needed for printf */
@@ -631,51 +634,51 @@ case 16:
 break;
 case 17:
 #line 85 "parser.y"
-	{ 
-                                checkIfVariableisInitialised(yystack.l_mark[-2].id); 
-                            }
-break;
-case 18:
-#line 89 "parser.y"
 	{   }
 break;
-case 19:
-#line 91 "parser.y"
+case 18:
+#line 87 "parser.y"
 	{ 
                                         checkIfVariableisInitialised(yystack.l_mark[-1].id); 
                                     }
 break;
+case 19:
+#line 91 "parser.y"
+	{ 
+                                            checkIfVariableisInitialised(yystack.l_mark[-2].id); 
+                                        }
+break;
 case 20:
-#line 96 "parser.y"
+#line 97 "parser.y"
 	{ 
                         moveIntegerToVariable(yystack.l_mark[-3].size, yystack.l_mark[-1].id); 
                     }
 break;
 case 21:
-#line 100 "parser.y"
+#line 101 "parser.y"
 	{ 
                                 assignVariableToAnother(yystack.l_mark[-3].id, yystack.l_mark[-1].id); 
                             }
 break;
 case 22:
-#line 105 "parser.y"
+#line 106 "parser.y"
 	{ 
                         moveIntegerToVariable(yystack.l_mark[-3].size, yystack.l_mark[-1].id); 
                     }
 break;
 case 23:
-#line 109 "parser.y"
+#line 110 "parser.y"
 	{ 
                                 assignVariableToAnother(yystack.l_mark[-3].id, yystack.l_mark[-1].id); 
                             }
 break;
 case 24:
-#line 114 "parser.y"
+#line 115 "parser.y"
 	{ 
                         exit(EXIT_SUCCESS); 
                     }
 break;
-#line 679 "y.tab.c"
+#line 682 "y.tab.c"
     }
     yystack.s_mark -= yym;
     yystate = *yystack.s_mark;

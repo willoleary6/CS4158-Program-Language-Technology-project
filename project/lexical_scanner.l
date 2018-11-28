@@ -5,36 +5,39 @@
 
 
 %option yylineno
+%option caseless
+%option noyywrap
 
 
 %%
-[\t\n ]+                    /* Ignore whitespace */ ;
-(?i:BEGINING)               { return BEGINING; }
-(?i:BODY)                   { return BODY; }
-(?i:END)                    { return END; }
-[Xx]+                       { 
-                                yylval.size = strlen(yytext); 
-                                return NUMSIZE; 
-                            }
-(?i:MOVE)                   { return MOVE; }
-(?i:TO)                     { return TO; }
-(?i:ADD)                    { return ADD; }
-(?i:INPUT)                  { return INPUT; }
-(?i:PRINT)                  { return PRINT; }
-;                           { return SEMICOLON; }
-[0-9]+                      { 
-                                yylval.size = atoi(yytext); 
-                                return INTEGER; 
-                            }
-[A-Za-z][A-Za-z0-9\-]*      { 
-                                yylval.id = yytext; 
-                                return VARIABLE; 
-                            }
-\"(\\.|[^"\\])*\"           { return TEXT; }
-\.                          { return TERMINATOR; }
-.                           { return 0; }
+[\t\n ]+                        /* Ignore whitespace */ ;
+BEGINING                        { return BEGINING; }
+BODY                            { return BODY; }
+END                             { return END; }
+MOVE                            { return MOVE; }
+TO                              { return TO; }
+ADD                             { return ADD; }
+INPUT                           { return INPUT; }
+PRINT                           { return PRINT; }
+;                               { return SEMICOLON; }
+X+                              {   
+                                    yylval.size = strlen(yytext); 
+                                    return NUMSIZE; 
+                                }
+[0-9]+                          { 
+                                    yylval.size = atoi(yytext); 
+                                    return INTEGER; 
+                                }
+[A-Z]+[A-Z0-9\-]*               { 
+                                    yylval.id = yytext; 
+                                    return VARIABLE; 
+                                }
+\"[^"\n]*\"                     { 
+                                    yylval.id = strdup(yytext); 
+                                    return TEXT; 
+                                }
+[_=+!"£$%^&*()\\\-]+[A-Z0-9\-]* { return *yytext; }
+\.                              { return TERMINATOR; }
+. ;
 %%
 
-int yywrap(void) {
-    return 1;
-}

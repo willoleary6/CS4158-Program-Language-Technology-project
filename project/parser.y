@@ -22,7 +22,7 @@ void moveIntegerToVariable(int num, char *var);
 int getVariableSize(char *var);
 void assignVariableToAnother(char *firstVariable, char *secondVariable);
 
-
+int hasErrors = 0;
 char variables[NUM_VARIABLES][32];
 int variableCounter = 0;
 int sizes[NUM_VARIABLES];
@@ -34,9 +34,9 @@ int sizes[NUM_VARIABLES];
         int size;
     }
 %start start
-%token <id> VARIABLE
+%token <id> VARIABLE TEXT
 %token <size> INTEGER NUMSIZE
-%token BEGINING BODY END MOVE TO ADD INPUT PRINT TEXT SEMICOLON TERMINATOR INVALID
+%token BEGINING BODY END MOVE TO ADD INPUT PRINT SEMICOLON TERMINATOR INVALID
 
 %%
 
@@ -80,17 +80,18 @@ print:          PRINT printStatement
                     {   }
 
 printStatement: TEXT SEMICOLON printStatement 
-                    {   }   
-                        | VARIABLE SEMICOLON printStatement 
-                            { 
-                                checkIfVariableisInitialised($1); 
-                            }
-                            | TEXT TERMINATOR 
-                                {   }   
+                    {   } 
+                        | TEXT TERMINATOR 
+                            {   }
                                 | VARIABLE TERMINATOR 
                                     { 
                                         checkIfVariableisInitialised($1); 
-                                    }
+                                    }     
+                                    | VARIABLE SEMICOLON printStatement 
+                                        { 
+                                            checkIfVariableisInitialised($1); 
+                                        }
+                                
 
 move:           MOVE INTEGER TO VARIABLE TERMINATOR 
                     { 
@@ -119,13 +120,16 @@ end:            END TERMINATOR
 
 
 int main() {
-    do {
-        yyparse();
-    } while(!feof(yyin));
+    yyparse();
+    if (hasErrors == 0) {
+        printf("Program conforms perfectly.\n");
+    }
+    return hasErrors;
 }
 
-void yyerror(const char *s) {
-    fprintf(stderr, "Error on line: (L%d): %s\n", yylineno, s);
+void yyerror(const char* s) {
+    printf("%s on line %d\n", s, yylineno);
+    hasErrors = 1;
 }
 
 void addVariable(int size, char *name) {
